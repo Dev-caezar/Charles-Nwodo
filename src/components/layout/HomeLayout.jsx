@@ -1,5 +1,5 @@
 import React from "react";
-import { Footer, Header } from "../static";
+import { DarkModeToggle, Footer, Header } from "../static";
 import { Outlet } from "react-router-dom";
 
 const HomeLayout = () => {
@@ -7,6 +7,7 @@ const HomeLayout = () => {
     <div className="flex-1">
       <Header />
       <Outlet />
+      <DarkModeToggle />
       <Footer />
     </div>
   );

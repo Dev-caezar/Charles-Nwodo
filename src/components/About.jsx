@@ -1,7 +1,41 @@
 import React from "react";
+import { useSelector } from "react-redux"; // <-- Import useSelector
 import { motion } from "framer-motion";
 
-// Icons
+// Define Theme Styles
+const aboutThemeStyles = {
+  light: {
+    sectionBg: "bg-white",
+    subtitleText: "text-blue-600",
+    headingText: "text-gray-900",
+    whoWeAreBg: "bg-blue-600",
+    whoWeAreText: "text-white",
+    whoWeAreBorder: "border-grey-50",
+    cardBg: "bg-white",
+    cardShadow: "shadow-md hover:shadow-xl",
+    cardBorder: "border-blue-500",
+    cardTitleText: "text-gray-900",
+    cardContentText: "text-gray-600",
+    iconColor: "text-blue-600",
+  },
+  dark: {
+    sectionBg: "bg-gray-900",
+    subtitleText: "text-blue-400",
+    headingText: "text-gray-100",
+    whoWeAreBg: "bg-blue-800",
+    whoWeAreText: "text-gray-100",
+    whoWeAreBorder: "border-gray-700", // Adjusted border for dark mode
+    cardBg: "bg-gray-800",
+    cardShadow: "shadow-xl hover:shadow-2xl", // Stronger shadow for contrast
+    cardBorder: "border-blue-400",
+    cardTitleText: "text-gray-100",
+    cardContentText: "text-gray-400",
+    iconColor: "text-blue-400",
+  },
+};
+
+// SVG Icons (Kept outside for cleanliness, they receive theme styles via props)
+// NOTE: The motion attributes (initial, whileInView, transition, viewport) are kept on the SVG wrapper.
 const IconUsers = props => (
   <motion.svg
     {...props}
@@ -78,7 +112,6 @@ const IconValues = props => (
   </motion.svg>
 );
 
-// Animations
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0 },
@@ -91,10 +124,16 @@ const stagger = {
 };
 
 const About = () => {
+  // Read the theme state from Redux
+  const isDarkMode = useSelector(state => state.theme.isDarkMode);
+
+  // Select the current style set
+  const theme = isDarkMode ? aboutThemeStyles.dark : aboutThemeStyles.light;
+
   return (
-    <div className="bg-white py-16 sm:py-20 px-4 overflow-hidden">
+    <div
+      className={`${theme.sectionBg} py-16 sm:py-20 px-4 overflow-hidden transition-colors duration-300`}>
       <div className="max-w-6xl mx-auto">
-        {/* HERO TEXT */}
         <motion.div
           className="text-center mb-16"
           initial="hidden"
@@ -102,12 +141,15 @@ const About = () => {
           viewport={{ once: true }}
           variants={fadeUp}
           transition={{ duration: 0.7 }}>
-          <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wider">
+          {/* Subtitle */}
+          <h2
+            className={`text-sm font-semibold uppercase tracking-wider ${theme.subtitleText} transition-colors duration-300`}>
             GET TO KNOW US
           </h2>
 
+          {/* Main Heading */}
           <motion.p
-            className="mt-2 text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl"
+            className={`mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl ${theme.headingText} transition-colors duration-300`}
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -116,72 +158,81 @@ const About = () => {
           </motion.p>
         </motion.div>
 
-        {/* WHO WE ARE */}
+        {/* Who We Are Section */}
         <motion.div
-          className="bg-blue-600 p-8 sm:p-12 rounded-xl shadow-lg border-l-4 border-grey-50 mb-16"
+          className={`${theme.whoWeAreBg} p-8 sm:p-12 rounded-xl shadow-lg border-l-4 ${theme.whoWeAreBorder} mb-16 transition-colors duration-300`}
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}>
-          <h3 className="text-2xl font-bold text-white mb-4 flex items-center">
-            <IconUsers className="w-7 h-7 text-white mr-3" />
+          <h3
+            className={`text-2xl font-bold ${theme.whoWeAreText} mb-4 flex items-center`}>
+            {/* Icon color is determined by the parent text color for simplicity */}
+            <IconUsers className={`w-7 h-7 mr-3 ${theme.whoWeAreText}`} />
             Who We Are
           </h3>
 
-          <p className="text-lg text-white leading-relaxed">
+          <p className={`text-lg ${theme.whoWeAreText} leading-relaxed`}>
             <strong>CGDConcepts</strong> is a creative studio based in Nigeria,
             offering design, printing, and product branding services with
             visuals that speak volumes and quality that endures.
           </p>
         </motion.div>
 
-        {/* MISSION - VISION - VALUES */}
+        {/* Mission, Vision, Values Grid */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
           variants={stagger}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}>
-          {/* Mission */}
+          {/* Mission Card */}
           <motion.div
             variants={fadeUp}
             transition={{ duration: 0.7 }}
             whileHover={{ scale: 1.05, y: -8 }}
-            className="bg-white p-8 rounded-xl shadow-md border-b-4 border-blue-500 hover:shadow-xl cursor-pointer">
-            <IconMission className="w-10 h-10 text-blue-600 mb-4" />
-            <h4 className="text-xl font-bold text-gray-900 mb-3">
+            className={`p-8 rounded-xl ${theme.cardBg} ${theme.cardShadow} border-b-4 ${theme.cardBorder} cursor-pointer transition-all duration-300`}>
+            <IconMission className={`w-10 h-10 mb-4 ${theme.iconColor}`} />
+
+            <h4 className={`text-xl font-bold mb-3 ${theme.cardTitleText}`}>
               Our Mission
             </h4>
-            <p className="text-gray-600">
+            <p className={`${theme.cardContentText}`}>
               To deliver high-quality design and print solutions that empower
               individuals and businesses to present their best.
             </p>
           </motion.div>
 
-          {/* Vision */}
+          {/* Vision Card */}
           <motion.div
             variants={fadeUp}
             transition={{ duration: 0.7 }}
             whileHover={{ scale: 1.05, y: -8 }}
-            className="bg-white p-8 rounded-xl shadow-md border-b-4 border-blue-500 hover:shadow-xl cursor-pointer">
-            <IconVision className="w-10 h-10 text-blue-600 mb-4" />
-            <h4 className="text-xl font-bold text-gray-900 mb-3">Our Vision</h4>
-            <p className="text-gray-600">
+            className={`p-8 rounded-xl ${theme.cardBg} ${theme.cardShadow} border-b-4 ${theme.cardBorder} cursor-pointer transition-all duration-300`}>
+            <IconVision className={`w-10 h-10 mb-4 ${theme.iconColor}`} />
+
+            <h4 className={`text-xl font-bold mb-3 ${theme.cardTitleText}`}>
+              Our Vision
+            </h4>
+            <p className={`${theme.cardContentText}`}>
               To become the most trusted and innovative creative brand across
               Africa and globally.
             </p>
           </motion.div>
 
-          {/* Values */}
+          {/* Values Card */}
           <motion.div
             variants={fadeUp}
             transition={{ duration: 0.7 }}
             whileHover={{ scale: 1.05, y: -8 }}
-            className="bg-white p-8 rounded-xl shadow-md border-b-4 border-blue-500 hover:shadow-xl cursor-pointer">
-            <IconValues className="w-10 h-10 text-blue-600 mb-4" />
-            <h4 className="text-xl font-bold text-gray-900 mb-3">Our Values</h4>
-            <ul className="text-gray-600 space-y-1 pl-5 list-disc">
+            className={`p-8 rounded-xl ${theme.cardBg} ${theme.cardShadow} border-b-4 ${theme.cardBorder} cursor-pointer transition-all duration-300`}>
+            <IconValues className={`w-10 h-10 mb-4 ${theme.iconColor}`} />
+
+            <h4 className={`text-xl font-bold mb-3 ${theme.cardTitleText}`}>
+              Our Values
+            </h4>
+            <ul className={`${theme.cardContentText} space-y-1 pl-5 list-disc`}>
               <li>Creativity</li>
               <li>Quality</li>
               <li>Professionalism</li>
